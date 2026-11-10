@@ -10,4 +10,5 @@
     <color name="vscode_text_secondary">#8E8E93</color>
     <color name="glass_card_bg">#CC252526</color>
     <color name="glass_card_border">#33FFFFFF</color>
+    <color name="ic_launcher_background">#1E1E1E</color>
 </resources>
