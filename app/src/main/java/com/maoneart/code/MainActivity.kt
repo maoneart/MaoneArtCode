@@ -88,9 +88,16 @@ class MainActivity : AppCompatActivity() {
         settings.mediaPlaybackRequiresUserGesture = false
         settings.javaScriptCanOpenWindowsAutomatically = true
 
-        // Use desktop-class user agent so VS Code provides full desktop layout
-        val defaultUa = settings.userAgentString
-        settings.userAgentString = defaultUa.replace("Mobile", "Desktop")
+        // Ensure Android WebView focus and native IME input connection
+        web.isFocusable = true
+        web.isFocusableInTouchMode = true
+        web.requestFocus(View.FOCUS_DOWN)
+        web.setOnTouchListener { v, _ ->
+            if (!v.hasFocus()) {
+                v.requestFocus()
+            }
+            false
+        }
 
         web.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
