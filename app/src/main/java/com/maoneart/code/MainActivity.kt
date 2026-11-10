@@ -23,11 +23,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.maoneart.code.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.util.concurrent.TimeUnit
+import java.net.InetSocketAddress
+import java.net.Socket
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,11 +41,7 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences("maoneart_code_prefs", Context.MODE_PRIVATE)
     }
 
-    private val httpClient = OkHttpClient.Builder()
-        .connectTimeout(1500, TimeUnit.MILLISECONDS)
-        .readTimeout(1500, TimeUnit.MILLISECONDS)
-        .build()
-
+    private var autoReconnectJob: Job? = null
     private var isToolbarVisible = true
     private var isStickyCtrl = false
     private var isStickyAlt = false
@@ -86,6 +84,9 @@ class MainActivity : AppCompatActivity() {
         settings.builtInZoomControls = false
         settings.displayZoomControls = false
         settings.cacheMode = WebSettings.LOAD_DEFAULT
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        settings.mediaPlaybackRequiresUserGesture = false
+        settings.javaScriptCanOpenWindowsAutomatically = true
 
         // Use desktop-class user agent so VS Code provides full desktop layout
         val defaultUa = settings.userAgentString
@@ -138,6 +139,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (binding.offlineDashboard.visibility == View.VISIBLE || binding.webView.url == null) {
+            checkServerAndConnect()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        autoReconnectJob?.cancel()
+    }
+
     private fun checkServerAndConnect() {
         binding.progressBar.visibility = View.VISIBLE
         val targetUrl = getServerUrl()
@@ -147,9 +160,12 @@ class MainActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 binding.progressBar.visibility = View.GONE
                 if (isAlive) {
+                    autoReconnectJob?.cancel()
                     binding.offlineDashboard.visibility = View.GONE
                     binding.webView.visibility = View.VISIBLE
-                    binding.webView.loadUrl(targetUrl)
+                    if (binding.webView.url == null || binding.webView.url != targetUrl) {
+                        binding.webView.loadUrl(targetUrl)
+                    }
                 } else {
                     showOfflineDashboard("🔴 Code Server Belum Aktif (Port 8090)")
                 }
@@ -160,12 +176,30 @@ class MainActivity : AppCompatActivity() {
     private fun pingServer(targetUrl: String): Boolean {
         return try {
             val uri = Uri.parse(targetUrl)
-            val checkUrl = "${uri.scheme}://${uri.host}:${if (uri.port != -1) uri.port else 8090}/"
-            val req = Request.Builder().url(checkUrl).head().build()
-            val resp = httpClient.newCall(req).execute()
-            resp.isSuccessful || resp.code in 200..399
+            val host = uri.host ?: "127.0.0.1"
+            val port = if (uri.port != -1) uri.port else 8090
+            Socket().use { socket ->
+                socket.connect(InetSocketAddress(host, port), 1200)
+                true
+            }
         } catch (_: Throwable) {
             false
+        }
+    }
+
+    private fun startAutoReconnectWatcher() {
+        autoReconnectJob?.cancel()
+        autoReconnectJob = lifecycleScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                delay(1500)
+                val targetUrl = getServerUrl()
+                if (pingServer(targetUrl)) {
+                    withContext(Dispatchers.Main) {
+                        checkServerAndConnect()
+                    }
+                    break
+                }
+            }
         }
     }
 
@@ -176,6 +210,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnToggleToolbar.visibility = View.GONE
         binding.offlineDashboard.visibility = View.VISIBLE
         binding.tvServerStatus.text = statusMsg
+        startAutoReconnectWatcher()
     }
 
     private fun setupDashboardListeners() {
