@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vscode_bg">
+
+    <!-- 1. Fullscreen Main Code Editor WebView -->
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <!-- 2. Loading Progress Indicator -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:indeterminate="true"
+        android:progressTint="@color/vscode_blue"
+        android:visibility="gone" />
+
+    <!-- 3. Collapsible Floating Coding Accessory Bar (ESC, TAB, CTRL, ALT, F1, etc) -->
+    <LinearLayout
+        android:id="@+id/codingToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:background="#E6252526"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="6dp">
+
+                <Button
+                    android:id="@+id/btnKeyEsc"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="44dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="ESC"
+                    android:textColor="#CCCCCC"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeyTab"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="44dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="TAB"
+                    android:textColor="#CCCCCC"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeyCtrl"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="46dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="CTRL"
+                    android:textColor="@color/vscode_blue"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeyAlt"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:minWidth="44dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="ALT"
+                    android:textColor="#CCCCCC"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeyPalette"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="✦ Palet (F1)"
+                    android:textColor="#4EC9B0"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeySave"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="💾 Simpan"
+                    android:textColor="#34C759"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeyTerminal"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="⌨️ Terminal"
+                    android:textColor="#DCDCAA"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnKeySidebar"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="📁 Berkas"
+                    android:textColor="#569CD6"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnReload"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="🔄 Muat Ulang"
+                    android:textColor="#999999"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <!-- 4. Floating Toggle Pill Button for Coding Accessory Bar -->
+    <TextView
+        android:id="@+id/btnToggleToolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_gravity="top|center_horizontal"
+        android:background="#B3252526"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:text="▼ Toolbar Tuts"
+        android:textColor="#888888"
+        android:textSize="10sp"
+        android:visibility="gone" />
+
+    <!-- 5. Glassmorphism Server Connection Dashboard (Offline / Setup State) -->
+    <ScrollView
+        android:id="@+id/offlineDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_vscode_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MaoneArt Code"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
+                android:text="Mobile Visual Studio Code IDE for Android"
+                android:textColor="@color/vscode_text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Glassmorphic Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tvServerStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="🔴 Code Server Belum Aktif"
+                    android:textColor="#FF6B6B"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Engine VS Code lokal berjalan di Termux pada port 8090. Buka Termux lalu jalankan perintah di bawah ini:"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp" />
+
+                <!-- Command Box -->
+                <LinearLayout
+                    android:id="@+id/btnCopyCommand"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"
+                    android:background="#151515"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="monospace"
+                        android:text="code"
+                        android:textColor="#4EC9B0"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📋 Salin"
+                        android:textColor="@color/vscode_blue"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Action Button 1: Launch Termux -->
+                <Button
+                    android:id="@+id/btnLaunchTermux"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/btn_vscode_primary"
+                    android:text="🚀 Buka Termux &amp; Jalankan"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@null" />
+
+                <!-- Action Button 2: Retry Connection -->
+                <Button
+                    android:id="@+id/btnRetry"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/btn_vscode_secondary"
+                    android:text="🔄 Hubungkan Ulang (Port 8090)"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    app:backgroundTint="@null" />
+
+                <!-- Action Button 3: Custom URL / Port -->
+                <Button
+                    android:id="@+id/btnSettings"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="⚙️ Ganti Port / Alamat Server"
+                    android:textAllCaps="false"
+                    android:textColor="@color/vscode_text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Mendukung Open VSX Marketplace, Git, Python, Node.js &amp; Terminal Linux"
+                android:textAlignment="center"
+                android:textColor="#666666"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

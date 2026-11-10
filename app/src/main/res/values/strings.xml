@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MaoneArt Code</string>
+    <string name="server_connecting">Menghubungkan ke Code Server...</string>
+    <string name="server_offline_title">Code Server Belum Aktif</string>
+    <string name="server_offline_desc">Jalankan perintah berikut di Termux untuk mengaktifkan VS Code Engine lokal:</string>
+    <string name="btn_open_termux">Buka Termux &amp; Jalankan Server</string>
+    <string name="btn_retry_connect">Coba Hubungkan Ulang</string>
+    <string name="btn_custom_port">Pengaturan Port / URL</string>
+    <string name="confirm_exit_title">Tutup MaoneArt Code?</string>
+    <string name="confirm_exit_desc">Pastikan semua perubahan berkas telah disimpan sebelum keluar.</string>
+</resources>

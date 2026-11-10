@@ -1,0 +1,62 @@
+name: Build MaoneArt Code APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Android Release APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x gradlew
+
+      - name: Build Android Release APK
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Prepare APK Asset
+        run: |
+          mkdir -p release-output
+          cp app/build/outputs/apk/release/app-release.apk release-output/MaoneArtCode.apk
+          ls -la release-output/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MaoneArtCode-apk
+          path: release-output/MaoneArtCode.apk
+          retention-days: 14
+
+      - name: Create GitHub Release & Upload Asset
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/heads/main')
+        with:
+          tag_name: "v1.0.${{ github.run_number }}"
+          name: "MaoneArt Code v1.0.${{ github.run_number }}"
+          body: |
+            ### 💻 MaoneArt Code for Android (Mobile VS Code IDE)
+            - **Engine**: Official Visual Studio Code (v1.145.2) Core
+            - **Marketplace**: Full Open VSX Registry Support (Python, Prettier, ESLint, GitLens, Cline, Roo Code, dll)
+            - **Integrated Terminal**: Native Linux shell & Git repository management
+            - **Hardware Keyboard**: Native shortcut interception (`Ctrl+S`, `Ctrl+P`, `Ctrl+Shift+P`, `Ctrl+W`, `Ctrl+B`, `Ctrl+\``)
+            - **Mobile Utility Bar**: Quick touch keys (`ESC`, `TAB`, `CTRL`, `ALT`, `F1`, `Save`, `Terminal`, `Explorer`)
+            - **Workspace**: Root workspace bound to `/sdcard/www`
+          files: release-output/MaoneArtCode.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="vscode_bg">#1E1E1E</color>
+    <color name="vscode_sidebar">#252526</color>
+    <color name="vscode_activitybar">#333333</color>
+    <color name="vscode_blue">#007ACC</color>
+    <color name="vscode_blue_hover">#0098FF</color>
+    <color name="vscode_green">#388A34</color>
+    <color name="vscode_text_primary">#D4D4D4</color>
+    <color name="vscode_text_secondary">#8E8E93</color>
+    <color name="glass_card_bg">#CC252526</color>
+    <color name="glass_card_border">#33FFFFFF</color>
+</resources>
